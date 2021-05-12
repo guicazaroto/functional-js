@@ -1,17 +1,26 @@
 import { handleStatus } from '../utils/promiseHelpers.js'
+import { partialize, compose, pipe } from '../utils/operators.js'
 
 const api = '/notas'
 
-const sumItems = code => notes => notes
-  .$flatMap(arr => arr.itens)
-  .filter(item => item.codigo === code)
+const getAllItems = notes => notes.$flatMap(arr => arr.itens)
+const filterByCode = (code, item) => item.filter(item => item.codigo === code)
+const sumItemsValue = notes => notes
   .reduce((total, item) => total + item.valor, 0)
 
 export const noteService = {
   listAll () {
-    return fetch(api).then(handleStatus)
+    return fetch(api)
+      .then(handleStatus)
+      .catch(err => {
+        console.log(err)
+        Promise.reject('Ocorreu um erro');
+      })
   },
   sumItems (code) {
-    return this.listAll().then(sumItems(code))
+    const filterItems = partialize(filterByCode, code)
+    const sumItems = pipe(getAllItems, filterItems, sumItemsValue)
+
+    return this.listAll().then(sumItems)
   }
 }
