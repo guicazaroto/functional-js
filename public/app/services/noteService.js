@@ -4,7 +4,7 @@ import { partialize, compose, pipe } from '../utils/operators.js'
 const api = '/notas'
 
 const getAllItems = notes => notes.$flatMap(arr => arr.itens)
-const filterByCode = (code, item) => item.filter(item => item.codigo === code)
+const filterByCode = (code, items) => items.filter(item => item.codigo === code)
 const sumItemsValue = notes => notes
   .reduce((total, item) => total + item.valor, 0)
 

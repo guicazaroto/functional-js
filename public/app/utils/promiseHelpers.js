@@ -5,3 +5,7 @@ export const log = param => {
   console.log(param)
   return param
 }
+
+export const delay = milliseconds => data =>
+  new Promise((resolve, reject) => setTimeout(() =>
+    resolve(data), milliseconds))
